@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  sdsb4d-master-svelte-go:
+    container_name: sdsb4d-master-svelte-go
+    image: sdsb4d-master-svelte-go:0.0.1
+    build: .
+    volumes:
+    - ./sveltemdb:/app/sveltemdb
+    ports:
+      - 7073:7071
+    environment:
+      DB_USER: sperma
+      DB_PASS: "asdQWE123!@#"
+      DB_PORT: 3306
+      DB_HOST: 165.22.242.64
+      DB_NAME: db_tot
+      REDIS_HOST: 174.138.18.67
+      REDIS_PORT: 6379
+      REDIS_PASS: "asdQWE123!@#"
+      REDIS_DB: 0
+    restart: always

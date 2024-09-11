@@ -1,0 +1,22 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - >-
+        asia.gcr.io/dazzling-pillar-328210/bitbucket.org/isbtotogroup/sdsb4d-backend:latest
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        asia.gcr.io/dazzling-pillar-328210/bitbucket.org/isbtotogroup/sdsb4d-backend:latest
+  - name: gcr.io/cloud-builders/gke-deploy
+    args:
+      - run
+      - '--filename=$_K8S_YAML_PATH'
+      - >-
+        --image=asia.gcr.io/dazzling-pillar-328210/bitbucket.org/isbtotogroup/sdsb4d-backend:latest
+      - '--location=$_GKE_LOCATION'
+      - '--cluster=$_GKE_CLUSTER'
+      - '--namespace=$_K8S_NAMESPACE'

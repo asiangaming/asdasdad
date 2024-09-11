@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sdsb4d-backend-go
+  name: sdsb4d-backend-go
+  namespace: sdsb4d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sdsb4d-backend-go
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sdsb4d-backend-go
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: sdsb4d-backend-go
+          image: asia.gcr.io/dazzling-pillar-328210/bitbucket.org/isbtotogroup/sdsb4d-backend:latest
+          resources:
+            limits:
+              cpu: 100m
+              ephemeral-storage: 100Mi
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 100Mi
+              memory: 512Mi
+          env:
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: pg-host
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: pg-user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: pg-pass
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: sdsb-dbname
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: redis-host
+            - name: DB_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: redis-pass
+            - name: DB_REDIS_NAME
+              value: '0'
+            - name: PATH_API
+              value: 'https://api.supersdsb.com/'
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: jwt-secret
+            - name: JWT_SECRET_KEY_EXPIRE_MINUTES_COUNT
+              valueFrom:
+                secretKeyRef:
+                  name: prod-db-credentials
+                  key: jwt-expired                  
